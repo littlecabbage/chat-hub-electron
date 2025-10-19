@@ -25,6 +25,51 @@ curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
+### Windows 系统安装命令：
+
+在 Windows 系统上有几种方式安装 Node.js 和 npm：
+
+1. 从 Node.js 官网下载安装包：
+   - 访问 https://nodejs.org/zh-cn/download/
+   - 下载 Windows 版本的安装包 (.msi 文件)
+   - 运行安装包并按照提示完成安装
+
+2. 使用 winget 包管理器安装：
+   ```powershell
+   # 在 PowerShell 中运行
+   winget install OpenJS.NodeJS
+   ```
+
+3. 使用 Chocolatey 包管理器安装：
+   ```powershell
+   # 以管理员身份运行 PowerShell
+   choco install nodejs
+   ```
+
+4. 使用 Scoop 包管理器安装：
+   ```powershell
+   scoop install nodejs
+   ```
+
+### macOS 系统安装命令：
+
+在 macOS 系统上也有几种方式安装 Node.js 和 npm：
+
+1. 从 Node.js 官网下载安装包：
+   - 访问 https://nodejs.org/zh-cn/download/
+   - 下载 macOS 版本的安装包 (.pkg 文件)
+   - 运行安装包并按照提示完成安装
+
+2. 使用 Homebrew 包管理器安装（推荐）：
+   ```bash
+   brew install node
+   ```
+
+3. 使用 MacPorts 包管理器安装：
+   ```bash
+   sudo port install nodejs16
+   ```
+
 ### 验证安装：
 
 ```bash
