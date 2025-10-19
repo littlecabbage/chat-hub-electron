@@ -29,6 +29,7 @@
     "electron-builder": "^26.0.12"
   },
   "dependencies": {
+    "electron-squirrel-startup": "^1.0.1",
     "vue": "^3.2.0"
   }
 }
