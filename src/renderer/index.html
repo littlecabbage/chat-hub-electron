@@ -7,10 +7,68 @@
         body {
             margin: 0;
             padding: 0;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             height: 100vh;
+            background-color: #f5f7fa;
+        }
+        
+        .platform-selector {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .selector-title {
+            color: white;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 16px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .selectors {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .selector-item {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .selector-item:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .selector-item input {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .selector-item input:checked + span {
+            font-weight: 600;
+            color: #fff;
+        }
+        
+        .selector-item span {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            user-select: none;
         }
         
         .webviews-container {
@@ -22,7 +80,8 @@
         .webview-wrapper {
             flex: 1;
             height: 100%;
-            border-right: 1px solid #ccc;
+            border-right: 1px solid #ddd;
+            transition: all 0.3s ease;
         }
         
         .webview-wrapper:last-child {
@@ -32,47 +91,82 @@
         webview {
             width: 100%;
             height: 100%;
+            border: none;
         }
         
         .input-container {
             display: flex;
-            padding: 10px;
-            border-top: 1px solid #ccc;
-            background-color: #f5f5f5;
+            padding: 15px;
+            border-top: 1px solid #ddd;
+            background-color: #fff;
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.05);
         }
         
         #message-input {
             flex: 1;
-            padding: 8px;
+            padding: 12px 15px;
             font-size: 14px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 24px;
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        #message-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
         }
         
         #send-button {
-            margin-left: 10px;
-            padding: 8px 16px;
-            background-color: #007bff;
+            margin-left: 12px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 4px;
+            border-radius: 24px;
             cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
         
         #send-button:hover {
-            background-color: #0069d9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        
+        #send-button:active {
+            transform: translateY(0);
         }
     </style>
 </head>
 <body>
+    <div class="platform-selector">
+        <div class="selector-title">选择要显示的平台:</div>
+        <div class="selectors">
+            <label class="selector-item">
+                <input type="checkbox" id="grok-selector" checked>
+                <span>Grok</span>
+            </label>
+            <label class="selector-item">
+                <input type="checkbox" id="qwen-selector" checked>
+                <span>Qwen</span>
+            </label>
+            <label class="selector-item">
+                <input type="checkbox" id="kimi-selector" checked>
+                <span>Kimi</span>
+            </label>
+        </div>
+    </div>
+    
     <div class="webviews-container">
-        <div class="webview-wrapper">
+        <div class="webview-wrapper" id="grok-wrapper">
             <webview id="grok-webview" src="https://grok.com" autosize="on"></webview>
         </div>
-        <div class="webview-wrapper">
+        <div class="webview-wrapper" id="qwen-wrapper">
             <webview id="qwen-webview" src="https://chat.qwen.ai/" autosize="on"></webview>
         </div>
-        <div class="webview-wrapper">
+        <div class="webview-wrapper" id="kimi-wrapper">
             <webview id="kimi-webview" src="https://www.kimi.com/" autosize="on"></webview>
         </div>
     </div>

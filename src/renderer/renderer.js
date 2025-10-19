@@ -14,6 +14,62 @@ document.addEventListener('DOMContentLoaded', () => {
     const qwenWebview = document.getElementById('qwen-webview');
     const kimiWebview = document.getElementById('kimi-webview');
     
+    // Get wrapper elements
+    const grokWrapper = document.getElementById('grok-wrapper');
+    const qwenWrapper = document.getElementById('qwen-wrapper');
+    const kimiWrapper = document.getElementById('kimi-wrapper');
+    
+    // Get selector elements
+    const grokSelector = document.getElementById('grok-selector');
+    const qwenSelector = document.getElementById('qwen-selector');
+    const kimiSelector = document.getElementById('kimi-selector');
+    
+    // Add event listeners to selectors
+    grokSelector.addEventListener('change', () => {
+        updateWebviewVisibility();
+    });
+    
+    qwenSelector.addEventListener('change', () => {
+        updateWebviewVisibility();
+    });
+    
+    kimiSelector.addEventListener('change', () => {
+        updateWebviewVisibility();
+    });
+    
+    // Update webview visibility based on selectors
+    function updateWebviewVisibility() {
+        grokWrapper.style.display = grokSelector.checked ? 'block' : 'none';
+        qwenWrapper.style.display = qwenSelector.checked ? 'block' : 'none';
+        kimiWrapper.style.display = kimiSelector.checked ? 'block' : 'none';
+        
+        // Adjust flex properties based on visible webviews
+        adjustWebviewLayout();
+    }
+    
+    // Adjust the layout of webviews based on how many are visible
+    function adjustWebviewLayout() {
+        const wrappers = [grokWrapper, qwenWrapper, kimiWrapper];
+        const visibleWrappers = wrappers.filter(wrapper => wrapper.style.display !== 'none');
+        
+        // Reset all widths
+        wrappers.forEach(wrapper => {
+            if (wrapper.style.display !== 'none') {
+                wrapper.style.flex = '1';
+            }
+        });
+        
+        // Remove borders from last visible element
+        wrappers.forEach(wrapper => {
+            wrapper.style.borderRight = '1px solid #ccc';
+        });
+        
+        if (visibleWrappers.length > 0) {
+            const lastVisible = visibleWrappers[visibleWrappers.length - 1];
+            lastVisible.style.borderRight = 'none';
+        }
+    }
+    
     // Send message to all webviews when button is clicked
     sendButton.addEventListener('click', () => {
         const message = messageInput.value;
@@ -64,4 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     kimiWebview.addEventListener('did-finish-load', () => {
         console.log('Kimi webview loaded');
     });
+    
+    // Initial layout adjustment
+    updateWebviewVisibility();
 });
