@@ -22,6 +22,29 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadFile(path.join(__dirname, '../renderer/index.html'));
 
+  // 监听主窗口的控制台消息
+  mainWindow.webContents.on('console-message', (event, level, message, line, sourceId) => {
+    console.log(`[Main Window Console] ${message}`);
+  });
+
+  // 当页面加载完成时，为 webview 添加事件监听器
+  mainWindow.webContents.on('did-finish-load', () => {
+    // 注入脚本来监听 webview 的控制台消息
+    mainWindow.webContents.executeJavaScript(`
+      // 为所有现有的 webview 添加监听器
+      const webviews = document.querySelectorAll('webview');
+      webviews.forEach(webview => {
+        webview.addEventListener('console-message', (e) => {
+          console.log(\`[Webview Console - \$\{webview.id\}] \$\{e.message\}\`);
+        });
+        
+        webview.addEventListener('did-fail-load', (e) => {
+          console.log(\`[Webview Error - \$\{webview.id\}] Failed to load: \$\{e.errorDescription\}\`);
+        });
+      });
+    `);
+  });
+
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
 };
