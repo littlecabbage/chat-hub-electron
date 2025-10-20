@@ -25,3 +25,10 @@ ChatHub - 多平台AI对话工具
 ## 最新特性
 - 美化平台选择界面，提供更好的用户体验
 - 隐藏顶部菜单栏，界面更加简洁
+- 实现统一输入框功能，支持跨平台消息同步发送
+
+## 文档列表
+- [项目概述](./01-project-overview.md)
+- [开发环境搭建](./02-development-environment.md)
+- [项目结构说明](./03-project-structure.md)
+- [统一输入框实现方案](./04-unified-input-implementation.md)
