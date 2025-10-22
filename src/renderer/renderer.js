@@ -137,260 +137,237 @@ document.addEventListener('DOMContentLoaded', () => {
         
         switch(platform) {
             case 'grok':
-                // Grok website input and send selectors based on the provided DOM structure
-                script = `
-                    (function() {
-                        try {
-                            // Specific selector for Grok based on the provided DOM structure
-                            var inputField = document.querySelector('textarea[aria-label="Ask Grok anything"]');
-                            
-                            if (inputField) {
-                                // Click on the input field to ensure it's focused
-                                inputField.click();
-                                
-                                // Small delay to ensure click is processed
-                                setTimeout(function() {
-                                    // Set the value of the input field
-                                    inputField.value = ${JSON.stringify(message)};
-                                    
-                                    // Trigger events to simulate user input
-                                    var inputEvent = new Event('input', { bubbles: true });
-                                    var changeEvent = new Event('change', { bubbles: true });
-                                    inputField.dispatchEvent(inputEvent);
-                                    inputField.dispatchEvent(changeEvent);
-                                    
-                                    // Try to find and click send button
-                                    setTimeout(function() {
-                                        try {
-                                            // Look for the submit button
-                                            var buttonSelectors = [
-                                                'button[type="submit"]:not([disabled])',
-                                                'button:not([aria-label="Clear"])',
-                                                'button[aria-label*="send"]',
-                                                'button[aria-label*="Send"]'
-                                            ];
-                                            
-                                            var sendButton = null;
-                                            for (var i = 0; i < buttonSelectors.length; i++) {
-                                                sendButton = document.querySelector(buttonSelectors[i]);
-                                                if (sendButton && !sendButton.disabled) break;
-                                            }
-                                            
-                                            if (sendButton) {
-                                                sendButton.click();
-                                            } else {
-                                                // If no button found, try pressing Enter in the input field
-                                                var enterEvent = new KeyboardEvent('keydown', {
-                                                    key: 'Enter',
-                                                    code: 'Enter',
-                                                    keyCode: 13,
-                                                    which: 13,
-                                                    bubbles: true
-                                                });
-                                                inputField.dispatchEvent(enterEvent);
-                                                
-                                                // Also dispatch the keyup event
-                                                var enterUpEvent = new KeyboardEvent('keyup', {
-                                                    key: 'Enter',
-                                                    code: 'Enter',
-                                                    keyCode: 13,
-                                                    which: 13,
-                                                    bubbles: true
-                                                });
-                                                inputField.dispatchEvent(enterUpEvent);
-                                            }
-                                        } catch (e) {
-                                            console.log('Error clicking send button or pressing enter in Grok: ' + e.message);
-                                        }
-                                    }, 300);
-                                }, 50);
-                            } else {
-                                console.log('Grok input field not found');
-                            }
-                        } catch (e) {
-                            console.log('Error sending message to Grok: ' + e.message);
-                        }
-                    })();
-                `;
+                script = createGrokScript(message);
                 break;
                 
             case 'qwen':
-                // Qwen website input and send selectors
-                script = `
-                    (function() {
-                        try {
-                            // Try multiple selectors for input field
-                            var inputSelectors = [
-                                'textarea[placeholder*="提问"]',
-                                'textarea[placeholder*="prompt"]',
-                                'textarea[class*="chat"]',
-                                'textarea'
-                            ];
-                            
-                            var inputField = null;
-                            for (var i = 0; i < inputSelectors.length; i++) {
-                                inputField = document.querySelector(inputSelectors[i]);
-                                if (inputField) break;
-                            }
-                            
-                            if (inputField) {
-                                var lastValue = inputField.value;
-                                inputField.value = ${JSON.stringify(message)};
-                                
-                                // Trigger events to simulate user input
-                                var inputEvent = new Event('input', { bubbles: true });
-                                var changeEvent = new Event('change', { bubbles: true });
-                                inputField.dispatchEvent(inputEvent);
-                                inputField.dispatchEvent(changeEvent);
-                                
-                                // Try to find and click send button
-                                setTimeout(function() {
-                                    try {
-                                        var buttonSelectors = [
-                                            'button[aria-label*="发送"]',
-                                            'button[type="submit"]',
-                                            '[class*="send"]',
-                                            '[class*="submit"]'
-                                        ];
-                                        
-                                        var sendButton = null;
-                                        for (var i = 0; i < buttonSelectors.length; i++) {
-                                            sendButton = document.querySelector(buttonSelectors[i]);
-                                            if (sendButton) break;
-                                        }
-                                        
-                                        if (sendButton) {
-                                            sendButton.click();
-                                        } else {
-                                            // If no button found, try pressing Enter in the input field
-                                            var enterEvent = new KeyboardEvent('keydown', {
-                                                key: 'Enter',
-                                                code: 'Enter',
-                                                keyCode: 13,
-                                                which: 13,
-                                                bubbles: true
-                                            });
-                                            inputField.dispatchEvent(enterEvent);
-                                        }
-                                    } catch (e) {
-                                        console.log('Error clicking send button or pressing enter in Qwen: ' + e.message);
-                                    }
-                                }, 300);
-                            } else {
-                                console.log('Qwen input field not found');
-                            }
-                        } catch (e) {
-                            console.log('Error sending message to Qwen: ' + e.message);
-                        }
-                    })();
-                `;
+                script = createQwenScript(message);
                 break;
                 
             case 'kimi':
-                // Kimi website input and send selectors based on the user's successful debugging script
-                script = `
-                    (function() {
-                        try {
-                            // Use the selectors that worked in the user's debugging
-                            var chatInput = document.querySelector('.chat-input-editor');
-                            
-                            if (!chatInput) {
-                                // Try alternative selectors for the contenteditable div
-                                var inputSelectors = [
-                                    'div[contenteditable="true"][class*="chat-input-editor"]',
-                                    'div[contenteditable="true"][role="textbox"]',
-                                    'div[contenteditable="true"]'
-                                ];
-                                
-                                for (var i = 0; i < inputSelectors.length; i++) {
-                                    chatInput = document.querySelector(inputSelectors[i]);
-                                    if (chatInput) break;
-                                }
-                            }
-                            
-                            if (chatInput) {
-                                // Click on the input field to ensure it's focused
-                                chatInput.click();
-                                
-                                // Small delay to ensure click is processed
-                                setTimeout(function() {
-                                    // Use the setInputText function that worked in debugging
-                                    function setInputText(element, text) {
-                                        element.focus();
-                                        document.execCommand('selectAll', false, null);
-                                        document.execCommand('delete', false, null);
-                                        document.execCommand('insertText', false, text);
-                                    }
-                                    
-                                    setInputText(chatInput, ${JSON.stringify(message)});
-                                    
-                                    // Try to find and click send button after a delay
-                                    setTimeout(function() {
-                                        try {
-                                            var sendButton = document.querySelector('.send-button');
-                                            
-                                            if (!sendButton) {
-                                                // Try alternative selectors for the send button
-                                                var buttonSelectors = [
-                                                    'button[aria-label*="发送"]',
-                                                    'button[type="submit"]:not([disabled])',
-                                                    '[class*="send"]',
-                                                    '[class*="submit"]',
-                                                    'button:not([disabled])'
-                                                ];
-                                                
-                                                for (var i = 0; i < buttonSelectors.length; i++) {
-                                                    sendButton = document.querySelector(buttonSelectors[i]);
-                                                    if (sendButton && !sendButton.disabled) break;
-                                                }
-                                            }
-                                            
-                                            if (sendButton && !sendButton.disabled) {
-                                                sendButton.click();
-                                            } else {
-                                                // If no button found, try pressing Enter in the input field
-                                                var enterEvent = new KeyboardEvent('keydown', {
-                                                    key: 'Enter',
-                                                    code: 'Enter',
-                                                    keyCode: 13,
-                                                    which: 13,
-                                                    bubbles: true
-                                                });
-                                                chatInput.dispatchEvent(enterEvent);
-                                                
-                                                // Also try keyup event
-                                                var enterUpEvent = new KeyboardEvent('keyup', {
-                                                    key: 'Enter',
-                                                    code: 'Enter',
-                                                    keyCode: 13,
-                                                    which: 13,
-                                                    bubbles: true
-                                                });
-                                                chatInput.dispatchEvent(enterUpEvent);
-                                            }
-                                        } catch (e) {
-                                            console.log('Error clicking send button or pressing enter in Kimi: ' + e.message);
-                                        }
-                                    }, 300);
-                                }, 50);
-                            } else {
-                                console.log('Kimi input field not found');
-                                // Log all contenteditable elements for debugging
-                                var editableElements = document.querySelectorAll('[contenteditable]');
-                                for (var j = 0; j < editableElements.length; j++) {
-                                    console.log('Contenteditable element:', editableElements[j].outerHTML.substring(0, 200) + '...');
-                                }
-                            }
-                        } catch (e) {
-                            console.log('Error sending message to Kimi: ' + e.message);
-                        }
-                    })();
-                `;
+                script = createKimiScript(message);
                 break;
         }
         
         // Execute the script in the webview
         webview.executeJavaScript(script);
+    }
+    
+    // Create script for Grok platform
+    function createGrokScript(message) {
+        return `
+            (function() {
+                try {
+                    // 查找输入框（Grok 使用 textarea）
+                    const inputArea = document.getElementsByTagName('textarea')[0];
+                    if (!inputArea) {
+                        console.error('未找到 Grok 的输入框');
+                        return;
+                    }
+
+                    // 查找发送按钮
+                    const sendBtn = document.querySelector('button[type="submit"]');
+                    if (!sendBtn) {
+                        console.error('未找到 Grok 的发送按钮');
+                        return;
+                    }
+
+                    // 填入提示词（模拟用户输入）
+                    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(
+                        window.HTMLTextAreaElement.prototype,
+                        'value'
+                    ).set;
+                    nativeInputValueSetter.call(inputArea, ${JSON.stringify(message)});
+                    inputArea.dispatchEvent(new Event('input', { bubbles: true }));
+
+                    // 点击发送（稍作延迟确保内容已加载）
+                    setTimeout(() => {
+                        // 先点击页面空白处（防止候选词干扰）
+                        document.body.click();
+                        setTimeout(() => {
+                            sendBtn.click();
+                            console.log('✅ 已向 Grok 发送问题：', ${JSON.stringify(message)});
+                        }, 300);
+                    }, 200);
+                } catch (e) {
+                    console.log('Error sending message to Grok: ' + e.message);
+                }
+            })();
+        `;
+    }
+    
+    // Create script for Qwen platform
+    function createQwenScript(message) {
+        return `
+            (function() {
+                try {
+                    // Try multiple selectors for input field
+                    var inputSelectors = [
+                        'textarea[placeholder*="提问"]',
+                        'textarea[placeholder*="prompt"]',
+                        'textarea[class*="chat"]',
+                        'textarea'
+                    ];
+                    
+                    var inputField = null;
+                    for (var i = 0; i < inputSelectors.length; i++) {
+                        inputField = document.querySelector(inputSelectors[i]);
+                        if (inputField) break;
+                    }
+                    
+                    if (inputField) {
+                        var lastValue = inputField.value;
+                        inputField.value = ${JSON.stringify(message)};
+                        
+                        // Trigger events to simulate user input
+                        var inputEvent = new Event('input', { bubbles: true });
+                        var changeEvent = new Event('change', { bubbles: true });
+                        inputField.dispatchEvent(inputEvent);
+                        inputField.dispatchEvent(changeEvent);
+                        
+                        // Try to find and click send button
+                        setTimeout(function() {
+                            try {
+                                var buttonSelectors = [
+                                    'button[aria-label*="发送"]',
+                                    'button[type="submit"]',
+                                    '[class*="send"]',
+                                    '[class*="submit"]'
+                                ];
+                                
+                                var sendButton = null;
+                                for (var i = 0; i < buttonSelectors.length; i++) {
+                                    sendButton = document.querySelector(buttonSelectors[i]);
+                                    if (sendButton) break;
+                                }
+                                
+                                if (sendButton) {
+                                    sendButton.click();
+                                } else {
+                                    // If no button found, try pressing Enter in the input field
+                                    var enterEvent = new KeyboardEvent('keydown', {
+                                        key: 'Enter',
+                                        code: 'Enter',
+                                        keyCode: 13,
+                                        which: 13,
+                                        bubbles: true
+                                    });
+                                    inputField.dispatchEvent(enterEvent);
+                                }
+                            } catch (e) {
+                                console.log('Error clicking send button or pressing enter in Qwen: ' + e.message);
+                            }
+                        }, 300);
+                    } else {
+                        console.log('Qwen input field not found');
+                    }
+                } catch (e) {
+                    console.log('Error sending message to Qwen: ' + e.message);
+                }
+            })();
+        `;
+    }
+    
+    // Create script for Kimi platform
+    function createKimiScript(message) {
+        return `
+            (function() {
+                try {
+                    // Use the selectors that worked in the user's debugging
+                    var chatInput = document.querySelector('.chat-input-editor');
+                    
+                    if (!chatInput) {
+                        // Try alternative selectors for the contenteditable div
+                        var inputSelectors = [
+                            'div[contenteditable="true"][class*="chat-input-editor"]',
+                            'div[contenteditable="true"][role="textbox"]',
+                            'div[contenteditable="true"]'
+                        ];
+                        
+                        for (var i = 0; i < inputSelectors.length; i++) {
+                            chatInput = document.querySelector(inputSelectors[i]);
+                            if (chatInput) break;
+                        }
+                    }
+                    
+                    if (chatInput) {
+                        // Click on the input field to ensure it's focused
+                        chatInput.click();
+                        
+                        // Small delay to ensure click is processed
+                        setTimeout(function() {
+                            // Use the setInputText function that worked in debugging
+                            function setInputText(element, text) {
+                                element.focus();
+                                document.execCommand('selectAll', false, null);
+                                document.execCommand('delete', false, null);
+                                document.execCommand('insertText', false, text);
+                            }
+                            
+                            setInputText(chatInput, ${JSON.stringify(message)});
+                            
+                            // Try to find and click send button after a delay
+                            setTimeout(function() {
+                                try {
+                                    var sendButton = document.querySelector('.send-button');
+                                    
+                                    if (!sendButton) {
+                                        // Try alternative selectors for the send button
+                                        var buttonSelectors = [
+                                            'button[aria-label*="发送"]',
+                                            'button[type="submit"]:not([disabled])',
+                                            '[class*="send"]',
+                                            '[class*="submit"]',
+                                            'button:not([disabled])'
+                                        ];
+                                        
+                                        for (var i = 0; i < buttonSelectors.length; i++) {
+                                            sendButton = document.querySelector(buttonSelectors[i]);
+                                            if (sendButton && !sendButton.disabled) break;
+                                        }
+                                    }
+                                    
+                                    if (sendButton && !sendButton.disabled) {
+                                        sendButton.click();
+                                    } else {
+                                        // If no button found, try pressing Enter in the input field
+                                        var enterEvent = new KeyboardEvent('keydown', {
+                                            key: 'Enter',
+                                            code: 'Enter',
+                                            keyCode: 13,
+                                            which: 13,
+                                            bubbles: true
+                                        });
+                                        chatInput.dispatchEvent(enterEvent);
+                                        
+                                        // Also try keyup event
+                                        var enterUpEvent = new KeyboardEvent('keyup', {
+                                            key: 'Enter',
+                                            code: 'Enter',
+                                            keyCode: 13,
+                                            which: 13,
+                                            bubbles: true
+                                        });
+                                        chatInput.dispatchEvent(enterUpEvent);
+                                    }
+                                } catch (e) {
+                                    console.log('Error clicking send button or pressing enter in Kimi: ' + e.message);
+                                }
+                            }, 300);
+                        }, 50);
+                    } else {
+                        console.log('Kimi input field not found');
+                        // Log all contenteditable elements for debugging
+                        var editableElements = document.querySelectorAll('[contenteditable]');
+                        for (var j = 0; j < editableElements.length; j++) {
+                            console.log('Contenteditable element:', editableElements[j].outerHTML.substring(0, 200) + '...');
+                        }
+                    }
+                } catch (e) {
+                    console.log('Error sending message to Kimi: ' + e.message);
+                }
+            })();
+        `;
     }
     
     // Webview load event listeners
