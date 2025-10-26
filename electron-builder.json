@@ -1,0 +1,24 @@
+{
+  "appId": "com.example.chathub",
+  "productName": "ChatHub",
+  "directories": {
+    "output": "dist"
+  },
+  "files": [
+    "src/**/*",
+    "package.json"
+  ],
+  "win": {
+    "target": "nsis"
+  },
+  "nsis": {
+    "oneClick": false,
+    "allowToChangeInstallationDirectory": true
+  },
+  "mac": {
+    "category": "public.app-category.utilities"
+  },
+  "linux": {
+    "target": "AppImage"
+  }
+}
