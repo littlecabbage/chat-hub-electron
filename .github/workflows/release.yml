@@ -28,7 +28,7 @@ jobs:
       - name: Build and Package
         run: npm run make
         env:
-          GH_TOKEN: ${{ secrets.TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
@@ -49,4 +49,4 @@ jobs:
           draft: true
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
