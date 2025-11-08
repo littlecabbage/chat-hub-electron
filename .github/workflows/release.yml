@@ -1,3 +1,4 @@
+<<<<<<< Local
 name: Release
 
 on:
@@ -57,4 +58,68 @@ jobs:
           draft: true
           prerelease: false
         env:
+=======
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-13]
+        
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          
+      - name: Install Dependencies
+        run: npm install
+        
+      - name: Build and Package
+        run: npm run make
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: List Build Outputs
+        shell: bash
+        run: |
+          echo "Listing out/ directory contents:"
+          ls -la out/ || ls out/
+          echo "Finding all files in out/ directory:"
+          find out/ -type f
+          
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ matrix.os }}
+          path: out/make/
+          if-no-files-found: warn
+          
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            out/make/**/*Setup.exe
+            out/make/**/*.deb
+            out/make/**/*.rpm
+            out/make/**/*.zip
+          draft: true
+          prerelease: false
+        env:
+>>>>>>> Remote
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

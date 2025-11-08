@@ -8,17 +8,36 @@
     "src/**/*",
     "package.json"
   ],
+  "asar": true,
+  "compression": "maximum",
   "win": {
-    "target": "nsis"
+    "target": "nsis",
+    "extraFiles": [],
+    "requestedExecutionLevel": "asInvoker"
   },
   "nsis": {
     "oneClick": false,
-    "allowToChangeInstallationDirectory": true
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": true
   },
   "mac": {
     "category": "public.app-category.utilities"
   },
   "linux": {
     "target": "AppImage"
-  }
+  },
+  "extraResources": [
+    {
+      "from": "src/",
+      "to": "src/",
+      "filter": ["**/*"]
+    }
+  ],
+  "asarUnpack": [
+    "node_modules/**/*"
+  ],
+  "removePackageScripts": true,
+  "npmRebuild": false,
+  "buildDependenciesFromSource": false,
+  "nodeGypRebuild": false
 }
