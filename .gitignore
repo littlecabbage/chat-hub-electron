@@ -123,6 +123,7 @@ temp/
 # IDE
 .vscode/
 .idea/
+.qoder/
 
 # OS
 .DS_Store
@@ -133,3 +134,4 @@ logs/
 
 # Project specific
 # Add any project specific files or directories here
+
